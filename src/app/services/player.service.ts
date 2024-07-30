@@ -4,13 +4,15 @@ import { Observable } from 'rxjs';
 
 export interface Player {
   name: string;
-  nickname: string;
+  disambiguator: string;
   score: number;
 }
 
 @Injectable({
   providedIn: 'root'
 })
+
+// We don't need this. Keeping it as a reference if needed in the future
 export class PlayerService {
   private apiUrl = 'http://localhost:8080/api/players'; // URL of your Node.js REST API
 

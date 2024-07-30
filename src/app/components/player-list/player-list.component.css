@@ -1,0 +1,58 @@
+/* Style for the container */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the title */
+h2 {
+  font-family: 'Arial', sans-serif;
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Style for the player list */
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Style for each player item */
+li {
+  font-family: 'Arial', sans-serif;
+  font-size: 18px;
+  color: #555;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Style for the player name and disambiguator */
+.player-info {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Style for the player score */
+.player-score {
+  font-weight: bold;
+  color: #333;
+}
+
+/* Style for the player disambiguator */
+.player-disambiguator {
+  font-size: 14px;
+  color: #999;
+}
+
+/* Add hover effect for each player item */
+li:hover {
+  background-color: #f1f1f1;
+}

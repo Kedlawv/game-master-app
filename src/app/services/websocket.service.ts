@@ -10,19 +10,24 @@ export class WebSocketService {
 
   constructor() {
     this.socket = io('http://localhost:8080');
+    this.setupListeners();
   }
 
-  sendMessage(msg: string) {
-    this.socket.emit('message', msg);
-  }
-
-  onUpdatePlayers(): Observable<any> {
-    return new Observable(observer => {
-      this.socket.on('updatePlayers', (data) => {
-        console.log("Received updatePlayers event with data:", data);
-        observer.next(data);
-      });
+  private setupListeners(): void {
+    this.socket.on('connect', () => {
+      console.log("Connected to WebSocket server.");
+      this.sendIdentification({ type: "GameMaster", id: `game-master-${this.socket.id}`});
+      this.sendMessage('registerGameMaster', '');
     });
+  }
+
+  sendMessage(eventType: string, msg: string) {
+    this.socket.emit(eventType, msg);
+  }
+
+  sendIdentification(data: object) {
+    console.log("Sending identification" + JSON.stringify(data));
+    this.socket.emit("identify", data);
   }
 
   onNewPlayer(): Observable<any> {

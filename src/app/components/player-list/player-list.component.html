@@ -1,8 +1,12 @@
-<div>
+<div class="container">
   <h2>Player List</h2>
   <ul>
     <li *ngFor="let player of players">
-      {{ player.name }} ({{ player.nickname }}) - {{ player.score }}
+      <div class="player-info">
+        <span>{{ player.name }}</span>
+        <span class="player-disambiguator">({{ player.disambiguator }})</span>
+      </div>
+      <span class="player-score">{{ player.score }}</span>
     </li>
   </ul>
 </div>
