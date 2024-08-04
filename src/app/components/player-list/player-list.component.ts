@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PlayerService, Player } from 'src/app/services/player.service';
-import { WebSocketService } from 'src/app/services/websocket.service';
+import {PlainWebSocketService} from '../../services/plain-websocket.service';
 
 @Component({
   selector: 'app-player-list',
@@ -10,12 +10,17 @@ import { WebSocketService } from 'src/app/services/websocket.service';
 export class PlayerListComponent implements OnInit {
   players: Player[] = [];
 
-  constructor(private playerService: PlayerService, private webSocketService: WebSocketService) {}
+  constructor(private playerService: PlayerService, private webSocketService: PlainWebSocketService) {}
 
   ngOnInit(): void {
     this.webSocketService.onNewPlayer().subscribe((player: Player) => {
       console.log('Received new-player from websocket:', player);
       this.players.push(player); // Add new player to the list
     });
+  }
+
+  startGame(): void {
+    this.webSocketService.sendMessage('start-game-gm', 'Game started!');
+    console.log('Start game event emitted');
   }
 }

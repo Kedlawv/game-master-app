@@ -56,3 +56,21 @@ li {
 li:hover {
   background-color: #f1f1f1;
 }
+
+/* Style for the Start Game button */
+button {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-size: 16px;
+  color: #fff;
+  background-color: #007bff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* Hover effect for the button */
+button:hover {
+  background-color: #0056b3;
+}
