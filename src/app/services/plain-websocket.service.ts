@@ -7,6 +7,7 @@ import { Observable, Observer } from 'rxjs';
 export class PlainWebSocketService {
   private socket?: WebSocket;
   private newPlayerObserver?: Observer<any>;
+  private playerScoreObserver?: Observer<any>;
   private reconnectInterval = 5000; // 5 seconds
   private reconnectAttempts = 0;
 
@@ -34,6 +35,11 @@ export class PlainWebSocketService {
         case 'new-player':
           if (this.newPlayerObserver) {
             this.newPlayerObserver.next(data);
+          }
+          break;
+        case 'player-score':
+          if (this.playerScoreObserver) {
+            this.playerScoreObserver.next(data);
           }
           break;
         case 'start-game':
@@ -80,6 +86,12 @@ export class PlainWebSocketService {
   onNewPlayer(): Observable<any> {
     return new Observable(observer => {
       this.newPlayerObserver = observer;
+    });
+  }
+
+  onPlayerScore(): Observable<any> {
+    return new Observable(observer => {
+      this.playerScoreObserver = observer;
     });
   }
 

@@ -4,7 +4,7 @@
     <li *ngFor="let player of players">
       <div class="player-info">
         <span>{{ player.name }}</span>
-        <span class="player-disambiguator">({{ player.disambiguator }})</span>
+        <span class="player-disambiguator">({{ player.disambiguator }} id:{{player.id}})</span>
       </div>
       <span class="player-score">{{ player.score }}</span>
     </li>
