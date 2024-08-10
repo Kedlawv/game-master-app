@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class WebSocketService {
+export class OldWebsocketService {
   private socket: Socket;
 
   constructor() {

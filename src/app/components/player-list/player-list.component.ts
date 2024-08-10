@@ -1,3 +1,4 @@
+import { KeyValuePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { PlayerService, Player } from 'src/app/services/player.service';
 import {PlainWebSocketService} from '../../services/plain-websocket.service';
@@ -8,7 +9,7 @@ import {PlainWebSocketService} from '../../services/plain-websocket.service';
   styleUrls: ['./player-list.component.css']
 })
 export class PlayerListComponent implements OnInit {
-  players: Player[] = [];
+  players: { [key: string]: Player} = {};
   private playerFound: boolean = false;
 
   constructor(private playerService: PlayerService, private webSocketService: PlainWebSocketService) {}
@@ -16,19 +17,16 @@ export class PlayerListComponent implements OnInit {
   ngOnInit(): void {
     this.webSocketService.onNewPlayer().subscribe((player: Player) => {
       console.log('Received new-player from websocket:', player);
-      this.players.push(player); // Add new player to the list
+      this.players[player.id]= player; // Add new player to the list
     });
     this.webSocketService.onPlayerScore().subscribe((player: Player) => {
       console.log('Received player-score from websocket:', player);
-      this.players.forEach((existingPlayer) => {
-        if (existingPlayer.id === player.id) {
-          existingPlayer.score = player.score; // Update the score
-          this.playerFound = true;
-        }
-      });
-      if (!this.playerFound) {
-        console.log('Player not found:', player.disambiguator);
-      }
+      this.players[player.id] = player;
+    });
+
+    this.webSocketService.onCurrentPlayers().subscribe((players: { [key: string]: Player}) => {
+      console.log('Received player-score from websocket:', players);
+      this.players = players;
     });
   }
 

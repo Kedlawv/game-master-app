@@ -1,14 +1,13 @@
 <div class="container">
   <h2>Player List</h2>
   <ul>
-    <li *ngFor="let player of players">
+    <li *ngFor="let player of players | keyvalue">
       <div class="player-info">
-        <span>{{ player.name }}</span>
-        <span class="player-disambiguator">({{ player.disambiguator }} id:{{player.id}})</span>
+        <span>{{ player.value.name }}</span>
+        <span class="player-disambiguator">({{ player.value.disambiguator }} id:{{player.key}})</span>
       </div>
-      <span class="player-score">{{ player.score }}</span>
+      <span class="player-score">{{ player.value.score }}</span>
     </li>
   </ul>
   <button (click)="startGame()">Start Game</button>
 </div>
-

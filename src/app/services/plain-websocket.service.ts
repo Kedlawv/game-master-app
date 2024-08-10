@@ -8,6 +8,7 @@ export class PlainWebSocketService {
   private socket?: WebSocket;
   private newPlayerObserver?: Observer<any>;
   private playerScoreObserver?: Observer<any>;
+  private currentPlayersObserver?: Observer<any>;
   private reconnectInterval = 5000; // 5 seconds
   private reconnectAttempts = 0;
 
@@ -27,6 +28,7 @@ export class PlainWebSocketService {
       console.log("Connected to WebSocket server.");
       this.reconnectAttempts = 0; // Reset reconnect attempts on successful connection
       this.sendIdentification({ type: "GameMaster", id: `game-master-${this.socket?.url}` });
+      this.sendMessage("get-current-players", "");
     };
 
     this.socket.onmessage = (event: MessageEvent) => {
@@ -40,6 +42,12 @@ export class PlainWebSocketService {
         case 'player-score':
           if (this.playerScoreObserver) {
             this.playerScoreObserver.next(data);
+          }
+          break;
+        case 'current-players':
+          console.log("Received current-players event");
+          if (this.currentPlayersObserver) {
+            this.currentPlayersObserver.next(data);
           }
           break;
         case 'start-game':
@@ -92,6 +100,12 @@ export class PlainWebSocketService {
   onPlayerScore(): Observable<any> {
     return new Observable(observer => {
       this.playerScoreObserver = observer;
+    });
+  }
+
+  onCurrentPlayers(): Observable<any> {
+    return new Observable(observer => {
+      this.currentPlayersObserver = observer;
     });
   }
 
