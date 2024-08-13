@@ -74,3 +74,29 @@ button {
 button:hover {
   background-color: #0056b3;
 }
+
+/* Adjust the container for the buttons */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Add space between the buttons */
+}
+
+/* Style for the Start Game button */
+button.start-game {
+  background-color: #28a745; /* Green */
+}
+
+button.start-game:hover {
+  background-color: #218838;
+}
+
+/* Style for the Initialize New Game button */
+button.clear-game {
+  background-color: #dc3545; /* Red */
+}
+
+button.clear-game:hover {
+  background-color: #c82333;
+}
+

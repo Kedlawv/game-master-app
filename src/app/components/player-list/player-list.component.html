@@ -1,5 +1,9 @@
 <div class="container">
   <h2>Player List</h2>
+  <div class="button-container">
+    <button class="start-game" (click)="startGame()">Start Game</button>
+    <button class="clear-game" (click)="clearCurrentPlayers()">Initialize new game</button>
+  </div>
   <ul>
     <li *ngFor="let player of players | keyvalue">
       <div class="player-info">
@@ -9,5 +13,4 @@
       <span class="player-score">{{ player.value.score }}</span>
     </li>
   </ul>
-  <button (click)="startGame()">Start Game</button>
 </div>
