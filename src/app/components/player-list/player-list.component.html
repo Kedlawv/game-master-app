@@ -1,16 +1,31 @@
 <div class="container">
-  <h2>Player List</h2>
-  <div class="button-container">
-    <button class="start-game" (click)="startGame()">Start Game</button>
-    <button class="clear-game" (click)="clearCurrentPlayers()">Initialize new game</button>
+  <!-- Button Panel -->
+  <div class="panel button-panel">
+    <div class="button-container">
+      <button class="start-game" (click)="startGame()">Start Game</button>
+      <button class="clear-game" (click)="clearCurrentPlayers()">Initialize new game</button>
+    </div>
   </div>
-  <ul>
-    <li *ngFor="let player of players | keyvalue">
-      <div class="player-info">
-        <span>{{ player.value.name }}</span>
-        <span class="player-disambiguator">({{ player.value.disambiguator }} id:{{player.key}})</span>
-      </div>
-      <span class="player-score">{{ player.value.score }}</span>
-    </li>
-  </ul>
+
+  <!-- Connection Status Panel -->
+  <div class="panel connection-panel">
+    <div class="connection-status">
+      WebSocket Connection Status: {{ connectionStatus }}
+    </div>
+  </div>
+
+  <!-- Player List Panel -->
+  <div class="panel player-list-panel">
+    <h2>Player List</h2>
+    <ul>
+      <li *ngFor="let player of players | keyvalue">
+        <div class="player-info">
+          <span>{{ player.value.name }}</span>
+          <span class="player-disambiguator">({{ player.value.disambiguator }} id:{{player.key}})</span>
+        </div>
+        <span class="player-score">{{ player.value.score }}</span>
+      </li>
+    </ul>
+  </div>
 </div>
+

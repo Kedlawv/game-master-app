@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Observer } from 'rxjs';
+import { Observable, Observer, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,16 +9,24 @@ export class PlainWebSocketService {
   private newPlayerObserver?: Observer<any>;
   private playerScoreObserver?: Observer<any>;
   private currentPlayersObserver?: Observer<any>;
-  private reconnectInterval = 5000; // 5 seconds
   private reconnectAttempts = 0;
+  private readonly maxAttempts = 10;
+  private serverURL = 'ws://localhost:8080'
+
+  // Create a BehaviorSubject with an initial state of 'disconnected'
+  private connectionStatusSubject: BehaviorSubject<string> = new BehaviorSubject<string>('disconnected');
+
+  // Expose the BehaviorSubject as an Observable to other parts of the application
+  public connectionStatus$: Observable<string> = this.connectionStatusSubject.asObservable();
 
   constructor() {
     this.connect();
   }
 
   private connect(): void {
-    this.socket = new WebSocket('ws://localhost:8080');
+    this.socket = new WebSocket(this.serverURL);
     this.setupListeners();
+    this.connectionStatusSubject.next("connecting");
   }
 
   private setupListeners(): void {
@@ -26,6 +34,8 @@ export class PlainWebSocketService {
 
     this.socket.onopen = () => {
       console.log("Connected to WebSocket server.");
+      this.connectionStatusSubject.next("connected");
+
       this.reconnectAttempts = 0; // Reset reconnect attempts on successful connection
       this.sendIdentification({ type: "GameMaster", id: `game-master-${this.socket?.url}` });
       this.sendMessage("get-current-players", "");
@@ -61,6 +71,7 @@ export class PlainWebSocketService {
 
     this.socket.onclose = () => {
       console.log("Disconnected from WebSocket server.");
+      this.connectionStatusSubject.next("disconnected")
       this.reconnect();
     };
 
@@ -71,12 +82,14 @@ export class PlainWebSocketService {
   }
 
   private reconnect(): void {
-    if (this.reconnectAttempts < 10) {
-      console.log(`Reconnecting in ${this.reconnectInterval / 1000} seconds...`);
+    if (this.reconnectAttempts < this.maxAttempts) {
+      const delay = (this.reconnectAttempts + 1) * 2 * 1000; // Exponential backoff
+      console.log(`Attempting to reconnect in ${delay / 1000} seconds...`);
+      this.connectionStatusSubject.next("reconnecting...")
       setTimeout(() => {
         this.reconnectAttempts++;
         this.connect();
-      }, this.reconnectInterval);
+      }, delay);
     } else {
       console.error("Max reconnect attempts reached. Please check the server.");
     }

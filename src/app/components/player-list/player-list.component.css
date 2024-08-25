@@ -8,6 +8,16 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* General style for panels */
+.panel {
+  background-color: #ffffff; /* White background for panels */
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px; /* Space between panels */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Subtle shadow for depth */
+}
+
 /* Style for the title */
 h2 {
   font-family: 'Arial', sans-serif;
@@ -100,3 +110,7 @@ button.clear-game:hover {
   background-color: #c82333;
 }
 
+/* Center text in connection status */
+.connection-status {
+  text-align: center;
+}

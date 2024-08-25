@@ -13,6 +13,7 @@ import {ConfirmationDialogComponent} from '../../confirmation-dialog/confirmatio
 export class PlayerListComponent implements OnInit {
   players: { [key: string]: Player} = {};
   private playerFound: boolean = false;
+  connectionStatus: string = 'disconnected';
 
   constructor(private playerService: PlayerService,
               private webSocketService: PlainWebSocketService,
@@ -31,6 +32,12 @@ export class PlayerListComponent implements OnInit {
     this.webSocketService.onCurrentPlayers().subscribe((players: { [key: string]: Player}) => {
       console.log('Received player-score from websocket:', players);
       this.players = players;
+    });
+
+    // Subscribe to the connection status Observable
+    this.webSocketService.connectionStatus$.subscribe((status: string) => {
+      this.connectionStatus = status;
+      console.log(`Connection status updated: ${status}`);
     });
   }
 
