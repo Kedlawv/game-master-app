@@ -1,9 +1,9 @@
-import { KeyValuePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { PlayerService, Player } from 'src/app/services/player.service';
+import {Component, OnInit} from '@angular/core';
+import {Player} from 'src/app/services/player.service';
 import {PlainWebSocketService} from '../../services/plain-websocket.service';
 import {MatDialog} from '@angular/material/dialog';
 import {ConfirmationDialogComponent} from '../../confirmation-dialog/confirmation-dialog.component';
+import {LoggerService} from '../../services/logger.service';
 
 @Component({
   selector: 'app-player-list',
@@ -15,29 +15,29 @@ export class PlayerListComponent implements OnInit {
   private playerFound: boolean = false;
   connectionStatus: string = 'disconnected';
 
-  constructor(private playerService: PlayerService,
-              private webSocketService: PlainWebSocketService,
+  constructor(private webSocketService: PlainWebSocketService,
+              private logger: LoggerService,
               public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.webSocketService.onNewPlayer().subscribe((player: Player) => {
-      console.log('Received new-player from websocket:', player);
+      this.logger.log('Received new-player from websocket:', player);
       this.players[player.id]= player; // Add new player to the list
     });
     this.webSocketService.onPlayerScore().subscribe((player: Player) => {
-      console.log('Received player-score from websocket:', player);
+      this.logger.log('Received player-score from websocket:', player);
       this.players[player.id] = player;
     });
 
     this.webSocketService.onCurrentPlayers().subscribe((players: { [key: string]: Player}) => {
-      console.log('Received player-score from websocket:', players);
+      this.logger.log('Received current players from websocket:', players);
       this.players = players;
     });
 
     // Subscribe to the connection status Observable
     this.webSocketService.connectionStatus$.subscribe((status: string) => {
       this.connectionStatus = status;
-      console.log(`Connection status updated: ${status}`);
+      this.logger.log(`Connection status updated: ${status}`);
     });
   }
 
@@ -51,7 +51,7 @@ export class PlayerListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.webSocketService.sendMessage('start-game-gm', 'Game started!');
-        console.log('Start game event emitted');
+        this.logger.log('Start game event emitted');
       }
     });
   }
@@ -65,7 +65,7 @@ export class PlayerListComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.webSocketService.sendMessage('init-new-game', '')
-        console.log('Initialising new game. Request to clear players list sent to server.')
+        this.logger.log('Initialising new game. Request to clear players list sent to server.')
       }
     });
   }

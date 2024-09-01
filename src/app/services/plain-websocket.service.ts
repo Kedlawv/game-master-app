@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Observer, BehaviorSubject } from 'rxjs';
+import {LoggerService} from './logger.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class PlainWebSocketService {
   // Expose the BehaviorSubject as an Observable to other parts of the application
   public connectionStatus$: Observable<string> = this.connectionStatusSubject.asObservable();
 
-  constructor() {
+  constructor(private logger: LoggerService) {
     this.connect();
   }
 
@@ -33,7 +34,7 @@ export class PlainWebSocketService {
     if (this.socket == null) {return;}
 
     this.socket.onopen = () => {
-      console.log("Connected to WebSocket server.");
+      this.logger.log("Connected to WebSocket server.");
       this.connectionStatusSubject.next("connected");
 
       this.reconnectAttempts = 0; // Reset reconnect attempts on successful connection
@@ -55,28 +56,28 @@ export class PlainWebSocketService {
           }
           break;
         case 'current-players':
-          console.log("Received current-players event");
+          this.logger.log("Received current-players event");
           if (this.currentPlayersObserver) {
             this.currentPlayersObserver.next(data);
           }
           break;
         case 'start-game':
-          console.log("Received start-game event");
+          this.logger.log("Received start-game event");
           break;
         default:
-          console.log("Unknown event type:", type);
+          this.logger.log("Unknown event type:", type);
           break;
       }
     };
 
     this.socket.onclose = () => {
-      console.log("Disconnected from WebSocket server.");
+      this.logger.log("Disconnected from WebSocket server.");
       this.connectionStatusSubject.next("disconnected")
       this.reconnect();
     };
 
     this.socket.onerror = (error) => {
-      console.error("WebSocket error:", error);
+      this.logger.error("WebSocket error:", error);
         this.socket?.close();
     };
   }
@@ -84,14 +85,14 @@ export class PlainWebSocketService {
   private reconnect(): void {
     if (this.reconnectAttempts < this.maxAttempts) {
       const delay = (this.reconnectAttempts + 1) * 2 * 1000; // Exponential backoff
-      console.log(`Attempting to reconnect in ${delay / 1000} seconds...`);
+      this.logger.log(`Attempting to reconnect in ${delay / 1000} seconds...`);
       this.connectionStatusSubject.next("reconnecting...")
       setTimeout(() => {
         this.reconnectAttempts++;
         this.connect();
       }, delay);
     } else {
-      console.error("Max reconnect attempts reached. Please check the server.");
+      this.logger.error("Max reconnect attempts reached. Please check the server.");
     }
   }
 
@@ -100,7 +101,7 @@ export class PlainWebSocketService {
   }
 
   sendIdentification(data: object) {
-    console.log("Sending identification" + JSON.stringify(data));
+    this.logger.log("Sending identification" + JSON.stringify(data));
     this.sendMessage("identify", JSON.stringify(data));
   }
 
